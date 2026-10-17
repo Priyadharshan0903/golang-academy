@@ -4,6 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {dirname,extname,join,posix,relative,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {fileURLToPath} from 'node:url';
+import {repositoryLink} from '../../shared/repository.ts';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -69,7 +70,7 @@ function exportV2(directory){
  for(const m of course.modules)routeFiles.set(`#/module/${m.id}`,`lessons/${m.id}/README.md`);
  const unresolved=[];
  function localLink(href,page,from){
-  if(/^(?:https?:|mailto:)/i.test(href)||href.startsWith('#')&&!href.startsWith('#/'))return href;
+  if(/^(?:https?:|mailto:)/i.test(href)||href.startsWith('#')&&!href.startsWith('#/'))return repositoryLink(href);
   let route,anchor='';
   if(href.startsWith('#/'))route=href;
   else{
@@ -109,7 +110,7 @@ function exportV2(directory){
   return body.split('\n').map(line=>{
    if(/^\s*`{3,}/.test(line)){inFence=!inFence;return line;}
    if(inFence)return line;
-   return line.split(/(`+[^`]*`+)/).map(part=>part.startsWith('`')?part:part.replace(/(!?\[[^\]]*\]\()([^\s)]+)(\))/g,(_,before,href,after)=>before+localLink(href,page,from)+after)).join('');
+   return line.split(/(`+[^`]*`+)/).map(part=>part.startsWith('`')?part:part.replace(/(!?\[[^\]]*\]\()([^\s)]+)(\))/g,(_,before,href,after)=>before+localLink(href,page,from)+after).replace(/https?:\/\/[^\s<>)\]]+/g,repositoryLink)).join('');
   }).join('\n');
  }
  for(const p of pages){const name=output(p);write(directory,name,`# ${p.title}\n\n${p.description||''}\n\n${convert(p.body,p,name)}\n`);}

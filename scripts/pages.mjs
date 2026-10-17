@@ -58,7 +58,7 @@ for(const edition of ['v1','v2']){
   if(entry.isFile()&&entry.name.endsWith('.tsx')&&!['page.tsx','layout.tsx'].includes(entry.name))copy(`apps/${edition}/app/${entry.name}`,`app/${entry.name}`);
  }
  copy(`content/${edition}`);
- copy('shared/styles');copy('shared/editions.ts');copy('shared/playground.ts');
+ copy('shared/styles');copy('shared/editions.ts');copy('shared/playground.ts');copy('shared/repository.ts');
  if(edition==='v2')copy('vendor/marked');
  copy(`apps/${edition}/public`,'public');copy('public/favicon.svg','public/favicon.svg');
  copy('postcss.config.mjs');

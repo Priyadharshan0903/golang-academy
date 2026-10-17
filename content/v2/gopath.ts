@@ -1,4 +1,6 @@
 import {editions} from '@/shared/editions';
+import {repositoryLink} from '@/shared/repository';
+export {sourceFileUrl} from '@/shared/repository';
 import raw from './gopath.json';
 export type CoursePage={id:string;kind:string;sourceFile:string;canonical:string;title:string;shortTitle:string;description:string;weight:number;moduleId:string;goVersion:string;body:string;minutes:number;headings?:string[];searchText:string;files?:string[]};
 export const course=raw as unknown as {
@@ -17,7 +19,7 @@ export function pageHref(page:CoursePage){return `#/${page.kind}/${page.id}`;}
 export function slug(text:string){return text.toLowerCase().replace(/<[^>]*>/g,'').replace(/[^\p{L}\p{N} _-]/gu,'').trim().replace(/[ _]+/g,'-');}
 export function resolveLink(href:string,page?:CoursePage):string {
  if(!href||/^(?:javascript|data|vbscript|file):/i.test(href))return '#';
- if(/^https?:\/\//i.test(href)||href.startsWith('mailto:'))return href;
+ if(/^https?:\/\//i.test(href)||href.startsWith('mailto:'))return repositoryLink(href);
  if(href.startsWith('#/'))return href;
  if(href.startsWith('#'))return href;
  try {
