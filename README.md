@@ -82,3 +82,7 @@ Releases, verification evidence, limitations, and rollback references are tracke
 Keep lessons, IDs, code-region markers, source citations, nested Go modules, build tags, fixtures, and migration assets intact. Verify a changed example through its exported learner pack, and keep local commands consistent with the exported layout. UI changes shared through `shared/styles/globals.css` need review in both editions and themes.
 
 V1 original text is CC BY 4.0. V2 imported/adapted GoPath text is CC BY-SA 4.0. Code retains its MIT notices; vendored components retain their own licenses. Each learner pack carries its own applicable notices. The V2 source importer and export scripts treat imported documents as course material, not instructions to execute.
+
+Security checks, reporting guidance, and the current public-repository review are
+documented in [SECURITY.md](SECURITY.md) and the
+[publication audit and tracker](docs/security/PUBLICATION-AUDIT.md).

@@ -15,7 +15,7 @@ const run=(args,cwd=root)=>{
  if(result.status!==0)throw new Error(`Command failed (${result.status}): ${args.join(' ')}`);
 };
 
-export function prepareEdition(edition,{target,dependencies=true}={}){
+export function prepareEdition(edition,{target,dependencies=true,dependencyDirectory=join(root,'node_modules')}={}){
  if(!editions.includes(edition))throw new Error('Choose v1 or v2.');
  const directory=target||mkdtempSync(join(tmpdir(),`go-by-doing-${edition}-`));
  mkdirSync(directory,{recursive:true});
@@ -39,13 +39,13 @@ export function prepareEdition(edition,{target,dependencies=true}={}){
  writeFileSync(join(directory,'package.json'),JSON.stringify(pkg,null,2)+'\n');
  copy('vite.config.ts');
  writeFileSync(join(directory,'.gitignore'),'node_modules/\ndist/\n.vinext/\n.next/\n.wrangler/\n.sites-runtime/\n.env*\n*.tsbuildinfo\n');
- if(dependencies&&!existsSync(join(directory,'node_modules')))symlinkSync(join(root,'node_modules'),join(directory,'node_modules'),'dir');
+ if(dependencies&&!existsSync(join(directory,'node_modules')))symlinkSync(dependencyDirectory,join(directory,'node_modules'),'dir');
  return directory;
 }
 
-export function buildEdition(edition){
+export function buildEdition(edition,options={}){
  run(['scripts/downloads/export.mjs',edition]);
- const directory=prepareEdition(edition);
+ const directory=prepareEdition(edition,options);
  run(['scripts/run-framework.mjs','build'],directory);
  const client=join(directory,'dist/client');
  const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)]);
