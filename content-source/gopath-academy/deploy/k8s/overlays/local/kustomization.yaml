@@ -1,0 +1,23 @@
+# The site on a local cluster (K8s track steps 2 and 3):
+#
+#   docker build -f deploy/Dockerfile -t gopath-academy:dev .
+#   (load the image into the cluster)
+#   kubectl apply -k deploy/k8s/overlays/local
+#   open http://academy.localtest.me
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: academy
+resources:
+  - namespace.yaml
+  - ../../base
+images:
+  - name: gopath-academy
+    newTag: dev
+patches:
+  - target:
+      kind: Deployment
+      name: academy
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent

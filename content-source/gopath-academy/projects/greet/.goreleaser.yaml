@@ -1,0 +1,57 @@
+# GoReleaser configuration for the greet CLI (lesson 14.4).
+#
+# Try it without publishing anything:
+#
+#   cd projects/greet
+#   goreleaser check
+#   goreleaser release --snapshot --clean
+#
+# Artifacts land in ./dist. In a repository of its own, you would push a
+# tag (git tag v1.2.0 && git push --tags) and run `goreleaser release`
+# in CI to publish a GitHub release.
+version: 2
+
+project_name: greet
+
+before:
+  hooks:
+    - go test ./...
+
+builds:
+  - id: greet
+    main: ./cmd/greet
+    binary: greet
+    env:
+      - CGO_ENABLED=0 # static binaries: no C toolchain or libc needed
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath # no local file paths in the binary
+    ldflags:
+      - -s -w
+      - -X github.com/Priyadharshan0903/gopath-academy/projects/greet/internal/version.Version={{ .Version }}
+      - -X github.com/Priyadharshan0903/gopath-academy/projects/greet/internal/version.Commit={{ .ShortCommit }}
+      - -X github.com/Priyadharshan0903/gopath-academy/projects/greet/internal/version.Date={{ .CommitDate }}
+    # Use the commit time, not the build time, so rebuilding the same
+    # commit produces identical archives.
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-snapshot+{{ .ShortCommit }}"
+
+changelog:
+  sort: asc
+  filters:
+    exclude: ["^docs:", "^test:"]

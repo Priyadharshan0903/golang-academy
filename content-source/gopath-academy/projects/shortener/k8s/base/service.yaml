@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shortener
+  labels:
+    app.kubernetes.io/name: shortener
+spec:
+  selector:
+    app.kubernetes.io/name: shortener
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: admin # metrics and pprof: reachable inside the cluster only
+      port: 9090
+      targetPort: admin

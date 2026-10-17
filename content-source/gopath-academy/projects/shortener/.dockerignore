@@ -1,0 +1,8 @@
+# Keep the build context small and the cache stable.
+.git
+**/*_test.go
+Dockerfile
+.dockerignore
+README.md
+k8s
+dist

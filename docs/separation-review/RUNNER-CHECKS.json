@@ -1,0 +1,21 @@
+{
+  "passed": 16,
+  "checks": [
+    "Reject invalid JSON",
+    "Reject invalid code 1",
+    "Reject invalid code 2",
+    "Reject invalid code 3",
+    "Reject invalid code 4",
+    "Reject invalid code 5",
+    "Reject invalid code 6",
+    "Reject oversized Content-Length",
+    "Bound streamed body without trusting Content-Length",
+    "Reject cross-origin request",
+    "Forward source only to the fixed official sandbox",
+    "Preserve compiler errors and runtime stderr",
+    "Handle an upstream busy response",
+    "Handle a network failure",
+    "Handle a timeout",
+    "Reject malformed sandbox events"
+  ]
+}

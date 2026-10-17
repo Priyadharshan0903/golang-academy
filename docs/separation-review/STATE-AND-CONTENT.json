@@ -1,0 +1,47 @@
+[
+  {
+    "edition": "v1",
+    "canonicalData": [
+      {
+        "file": "curriculum.ts",
+        "unchanged": true,
+        "sha256": "c8905768e4faec961d2dd6824b0efb646f75c022d30641fecacfe82e6cc17024"
+      },
+      {
+        "file": "cases.ts",
+        "unchanged": true,
+        "sha256": "852113267b4b25268fe1db3cbfd0a5c7cad7d552143e917a19707ee608c179ab"
+      },
+      {
+        "file": "project-guide.ts",
+        "unchanged": true,
+        "sha256": "1c8426075c751aaaa8ab9ec9e4aae6e85ea10ff8d8d6c93521edd941397acd5d"
+      },
+      {
+        "file": "project-files.json",
+        "unchanged": true,
+        "sha256": "58a5fa409fccf0cc9617b31330b32b3a15c95bd5ad13d30572b48a833fd3a785"
+      }
+    ],
+    "stateKeyStrings": [
+      "go-by-doing.draft.${l.id}.v1",
+      "go-by-doing.progress.v1",
+      "go-by-doing.project.website-checker.v1"
+    ],
+    "browserStoredStateVerification": "Pending: Chromium launch blocked by macOS permissions."
+  },
+  {
+    "edition": "v2",
+    "canonicalData": [
+      {
+        "file": "gopath.json",
+        "unchanged": true,
+        "sha256": "0d1e4a1d3f4a50eda860b41a51c1a1a1997411493d80f2e601a8da153bb93bec"
+      }
+    ],
+    "stateKeyStrings": [
+      "go-by-doing.gopath-v2.progress.v1"
+    ],
+    "browserStoredStateVerification": "Pending: Chromium launch blocked by macOS permissions."
+  }
+]

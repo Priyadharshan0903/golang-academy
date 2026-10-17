@@ -1,0 +1,68 @@
+{{- /*
+  Embed a real file from examples/, exercises/ or projects/.
+
+  Usage:
+    {{< example file="examples/m01/hello/main.go" >}}
+    {{< example file="examples/m01/hello/main.go" region="main" >}}
+    {{< example file="examples/m01/hello/main.go" run="go run ./examples/m01/hello" >}}
+
+  Regions are marked in the source file with lines like:
+    // [start main]
+    ...
+    // [end main]
+  Marker lines are never shown on the site.
+*/ -}}
+{{- $file := .Get "file" -}}
+{{- if not $file -}}
+  {{- errorf "example shortcode: missing file parameter at %s" .Position -}}
+{{- end -}}
+{{- $res := resources.Get (printf "code/%s" $file) -}}
+{{- if not $res -}}
+  {{- errorf "example shortcode: %q not found at %s" $file .Position -}}
+{{- end -}}
+
+{{- $region := .Get "region" | default "" -}}
+{{- $inside := eq $region "" -}}
+{{- $found := eq $region "" -}}
+{{- $out := slice -}}
+{{- range split $res.Content "\n" -}}
+  {{- $t := trim . " \t\r" -}}
+  {{- if hasPrefix $t "// [start " -}}
+    {{- if and $region (eq $t (printf "// [start %s]" $region)) -}}
+      {{- $inside = true -}}
+      {{- $found = true -}}
+    {{- end -}}
+  {{- else if hasPrefix $t "// [end " -}}
+    {{- if and $region (eq $t (printf "// [end %s]" $region)) -}}
+      {{- $inside = false -}}
+    {{- end -}}
+  {{- else if $inside -}}
+    {{- $out = $out | append (strings.TrimRight "\r" .) -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $found -}}
+  {{- errorf "example shortcode: region %q not found in %q at %s" $region $file .Position -}}
+{{- end -}}
+{{- $code := strings.Trim (delimit $out "\n") "\n" -}}
+
+{{- $base := path.Base $file -}}
+{{- $ext := path.Ext $file -}}
+{{- $lang := "text" -}}
+{{- if eq $ext ".go" }}{{ $lang = "go" }}
+{{- else if in (slice ".yaml" ".yml") $ext }}{{ $lang = "yaml" }}
+{{- else if eq $ext ".toml" }}{{ $lang = "toml" }}
+{{- else if eq $ext ".sh" }}{{ $lang = "bash" }}
+{{- else if eq $base "Makefile" }}{{ $lang = "makefile" }}
+{{- else if eq $base "Dockerfile" }}{{ $lang = "docker" }}
+{{- end -}}
+
+{{- $fence := "````" -}}
+{{- $md := printf "%s%s {filename=%q}\n%s\n%s" $fence $lang $file $code $fence -}}
+{{- $.Page.RenderString (dict "display" "block") $md -}}
+
+{{- $repo := site.Params.repoURL -}}
+{{- $branch := site.Params.repoBranch | default "main" -}}
+<p class="ga-example-meta">
+  <a href="{{ $repo }}/blob/{{ $branch }}/{{ $file }}" target="_blank" rel="noopener">View source on GitHub</a>
+  {{- with .Get "run" }} · Run it: <code>{{ . }}</code>{{ end }}
+</p>

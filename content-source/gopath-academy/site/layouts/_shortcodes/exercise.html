@@ -1,0 +1,43 @@
+{{- /*
+  Show an exercise: where it lives, how to run it, and a hidden solution.
+
+  Usage:
+    {{< exercise dir="m01/01-greeting" >}}
+    Implement `Greeting` so that all tests pass.
+    {{< /exercise >}}
+
+  Expects exercises/<dir>/ to contain starter.go, solution.go and a _test.go file.
+*/ -}}
+{{- $dir := .Get "dir" -}}
+{{- if not $dir -}}
+  {{- errorf "exercise shortcode: missing dir parameter at %s" .Position -}}
+{{- end -}}
+{{- $starter := resources.Get (printf "code/exercises/%s/starter.go" $dir) -}}
+{{- $solution := resources.Get (printf "code/exercises/%s/solution.go" $dir) -}}
+{{- if not (and $starter $solution) -}}
+  {{- errorf "exercise shortcode: starter.go or solution.go missing in exercises/%s at %s" $dir .Position -}}
+{{- end -}}
+{{- $repo := site.Params.repoURL -}}
+{{- $branch := site.Params.repoBranch | default "main" -}}
+
+{{- /* Strip build constraint lines so learners see clean code. */ -}}
+{{- $clean := slice -}}
+{{- range split $solution.Content "\n" -}}
+  {{- if not (hasPrefix . "//go:build") -}}{{- $clean = $clean | append . -}}{{- end -}}
+{{- end -}}
+{{- $solutionCode := strings.Trim (delimit $clean "\n") "\n" -}}
+
+<div class="ga-exercise">
+  <div class="ga-exercise-title">Exercise</div>
+  <div class="ga-exercise-body">
+    {{ .Inner | $.Page.RenderString (dict "display" "block") }}
+    <p><strong>Where:</strong> <a href="{{ $repo }}/tree/{{ $branch }}/exercises/{{ $dir }}" target="_blank" rel="noopener"><code>exercises/{{ $dir }}</code></a>. Edit <code>starter.go</code> only.</p>
+    {{ $.Page.RenderString (dict "display" "block") (printf "```bash\ncd exercises\ngo test ./%s/\n```" $dir) }}
+    <p>The tests fail until your implementation is correct. When every test passes, you are done.</p>
+    <details class="ga-solution">
+      <summary>Show the reference solution (try it yourself first)</summary>
+      {{ $.Page.RenderString (dict "display" "block") (printf "````go {filename=%q}\n%s\n````" (printf "exercises/%s/solution.go" $dir) $solutionCode) }}
+      <p>Check it yourself: <code>go test -tags solution ./{{ $dir }}/</code></p>
+    </details>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-17",
+  "apps": [
+    {
+      "edition": "v1",
+      "hosting": {
+        "d1": null,
+        "r2": null,
+        "project_id": "appgprj_6ad1ec4b52d0819182e57f2c75418cb4"
+      },
+      "content": [
+        "content/v1"
+      ],
+      "stateNamespaces": [
+        "go-by-doing.draft.${l.id}.v1",
+        "go-by-doing.progress.v1",
+        "go-by-doing.project.website-checker.v1"
+      ],
+      "runner": "shared/api/run.ts"
+    },
+    {
+      "edition": "v2",
+      "hosting": {
+        "d1": null,
+        "r2": null,
+        "project_id": "appgprj_6ad25f3fe054819183e766eb2c2433fa"
+      },
+      "content": [
+        "content/v2"
+      ],
+      "stateNamespaces": [
+        "go-by-doing.gopath-v2.progress.v1"
+      ],
+      "runner": "shared/api/run.ts"
+    }
+  ],
+  "shared": [
+    "shared/styles/globals.css",
+    "shared/api/run.ts",
+    "shared/editions.ts"
+  ],
+  "v2ImmutableSource": "content-source/gopath-academy"
+}

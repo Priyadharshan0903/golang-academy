@@ -1,0 +1,118 @@
+baseURL = "https://example.com/"
+title = "GoPath Academy"
+locale = "en"
+enableRobotsTXT = true
+enableGitInfo = true
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.146.0"
+
+  [[module.imports]]
+    path = "github.com/imfing/hextra"
+
+  # Default mounts are replaced as soon as one mount is declared,
+  # so the standard folders are listed explicitly.
+  [[module.mounts]]
+    source = "content"
+    target = "content"
+  [[module.mounts]]
+    source = "layouts"
+    target = "layouts"
+  [[module.mounts]]
+    source = "static"
+    target = "static"
+  [[module.mounts]]
+    source = "assets"
+    target = "assets"
+  [[module.mounts]]
+    source = "archetypes"
+    target = "archetypes"
+
+  # Real, tested Go code lives outside the site. Mounting it lets the
+  # `example` shortcode embed files directly, so lessons never drift
+  # from the code that CI runs.
+  [[module.mounts]]
+    source = "../examples"
+    target = "assets/code/examples"
+  [[module.mounts]]
+    source = "../exercises"
+    target = "assets/code/exercises"
+  [[module.mounts]]
+    source = "../projects"
+    target = "assets/code/projects"
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+  [markup.goldmark.renderer]
+    unsafe = true
+
+[menu]
+  [[menu.main]]
+    name = "Learn"
+    pageRef = "/learn"
+    weight = 1
+  [[menu.main]]
+    name = "Projects"
+    pageRef = "/projects"
+    weight = 2
+  [[menu.main]]
+    name = "Case studies"
+    pageRef = "/case-studies"
+    weight = 3
+  [[menu.main]]
+    name = "Search"
+    weight = 4
+    [menu.main.params]
+      type = "search"
+  [[menu.main]]
+    name = "GitHub"
+    weight = 5
+    url = "https://github.com/Priyadharshan0903/gopath-academy"
+    [menu.main.params]
+      icon = "github"
+
+[params]
+  description = "A free, open source, in-depth Go course for developers. Tested examples, hands-on exercises, real projects and case studies."
+  repoURL = "https://github.com/Priyadharshan0903/gopath-academy"
+  repoBranch = "main"
+
+  [params.navbar]
+    displayTitle = true
+    displayLogo = false
+    width = "wide"
+
+  [params.page]
+    width = "wide"
+
+  [params.theme]
+    default = "system"
+    displayToggle = true
+
+  [params.footer]
+    enable = true
+    displayCopyright = true
+    displayPoweredBy = false
+    width = "normal"
+
+  displayUpdatedDate = true
+  dateFormat = "January 2, 2006"
+
+  [params.search]
+    enable = true
+    type = "flexsearch"
+    [params.search.flexsearch]
+      index = "content"
+      tokenize = "forward"
+      # Vendored copy (Apache-2.0) so builds never depend on a CDN.
+      js = "lib/flexsearch/flexsearch.bundle.min.js"
+
+  [params.editURL]
+    enable = true
+    base = "https://github.com/Priyadharshan0903/gopath-academy/edit/main/site/content"
+
+  [params.highlight.copy]
+    enable = true
+    display = "hover"

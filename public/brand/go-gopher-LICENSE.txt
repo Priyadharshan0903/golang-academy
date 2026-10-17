@@ -1,0 +1,8 @@
+Go gopher artwork by Renee French.
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+
+Original artwork: https://go.dev/images/gophers/blue.svg
+Attribution and license reference: https://go.dev/blog/gopher
+Local asset: go-gopher-blue.svg
+The original SVG is used without modification; CSS scales it for display.

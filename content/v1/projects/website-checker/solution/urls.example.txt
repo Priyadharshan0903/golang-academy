@@ -1,0 +1,3 @@
+# Only check endpoints you own or are allowed to monitor.
+https://example.com
+https://go.dev

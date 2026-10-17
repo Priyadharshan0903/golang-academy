@@ -1,0 +1,41 @@
+/* Small additions on top of the Hextra theme. */
+
+.ga-example-meta {
+  margin-top: -0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+.ga-example-meta a {
+  text-decoration: underline;
+}
+
+.ga-exercise {
+  margin: 1.5rem 0;
+  border: 1px solid rgba(0, 173, 216, 0.45);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.ga-exercise-title {
+  background: rgba(0, 173, 216, 0.12);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.ga-exercise-body {
+  padding: 0.25rem 1rem 0.75rem;
+}
+.ga-exercise-body p {
+  margin-top: 0.75rem;
+}
+.ga-solution {
+  margin-top: 1rem;
+}
+.ga-solution summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Fact tables (case studies) are written with an empty header row; hide it. */
+.content thead:not(:has(th:not(:empty))) {
+  display: none;
+}

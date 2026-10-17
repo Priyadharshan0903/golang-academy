@@ -1,0 +1,25 @@
+# A complete local setup (k3s, kind, Docker Desktop): the shortener with
+# PostgreSQL and Redis running in the cluster.
+#
+#   docker build -t shortener:dev projects/shortener
+#   (load the image into the cluster, see lesson 15.2)
+#   kubectl apply -k projects/shortener/k8s/overlays/local
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: shortener
+resources:
+  - namespace.yaml
+  - ../../base
+  - postgres.yaml
+  - redis.yaml
+secretGenerator:
+  # Local development values only. Real clusters get secrets from a
+  # secret manager (External Secrets, Sealed Secrets, Vault), never git.
+  - name: postgres
+    literals:
+      - password=local-dev-only
+  - name: shortener-db
+    literals:
+      - database-url=postgres://postgres:local-dev-only@postgres:5432/postgres?sslmode=disable
+patches:
+  - path: deployment-patch.yaml

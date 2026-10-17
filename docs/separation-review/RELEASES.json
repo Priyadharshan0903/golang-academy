@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-17",
+  "audience": "Owner-private; existing access preserved.",
+  "verification": {
+    "goChecks": 52,
+    "runnerChecks": 16,
+    "archiveIntegrity": "passed",
+    "reproducibleArchives": "passed",
+    "localMarkdownLinks": "passed",
+    "hostedArchives": "Exact match to verified local ZIPs.",
+    "browser": "Blocked: macOS denied Chromium launch, including the escalated attempt."
+  },
+  "sites": {
+    "v1": {
+      "url": "https://go-by-doing.workday-code-8517.chatgpt.site",
+      "project_id": "appgprj_6ad1ec4b52d0819182e57f2c75418cb4",
+      "version_id": "appgprj_6ad1ec4b52d0819182e57f2c75418cb4~appgver_4a60f82d75bc8191af2683e986c48455",
+      "deployment_id": "appgdep_6ad3130105b08191b22c4e5474f4591a",
+      "commit_sha": "ec2354839086fc6b7bbf2b31750b2bd1f033e95a",
+      "status": "succeeded",
+      "hostedVerification": {
+        "edition": "v1",
+        "url": "https://go-by-doing.workday-code-8517.chatgpt.site",
+        "overviewHTTP": 200,
+        "archiveHTTP": 200,
+        "archiveSha256": "728fb2afc6e4da9fd9d8f1751576ab5d157c6e9047fc0455547ef3669266d44c",
+        "legacyDownload": "passed"
+      },
+      "rollbackVersionId": "appgprj_6ad1ec4b52d0819182e57f2c75418cb4~appgver_21f8591ea54081919cc4c07b7724a3ee",
+      "previousSourceCommit": "a441c8058f4673e7a3918d0af405ef97dad336d6"
+    },
+    "v2": {
+      "url": "https://go-by-doing-gopath-v2.workday-code-8517.chatgpt.site",
+      "project_id": "appgprj_6ad25f3fe054819183e766eb2c2433fa",
+      "version_id": "appgprj_6ad25f3fe054819183e766eb2c2433fa~appgver_4f26b59f8ef88191b7f0d898dcb14070",
+      "deployment_id": "appgdep_6ad313a04efc8191a9fe6fc3ac2a8975",
+      "commit_sha": "573c74b5daea8965e4e44e7f39c5b84260dda995",
+      "status": "succeeded",
+      "hostedVerification": {
+        "edition": "v2",
+        "url": "https://go-by-doing-gopath-v2.workday-code-8517.chatgpt.site",
+        "overviewHTTP": 200,
+        "archiveHTTP": 200,
+        "archiveSha256": "4b332e6d889ce5cb5784ec51b28e06739d1965a32bbbeb5da4ef068f16f86a62",
+        "legacyDownload": "passed"
+      },
+      "rollbackVersionId": "appgprj_6ad25f3fe054819183e766eb2c2433fa~appgver_52c0946bef988191bd896f5812bcc81c",
+      "previousSourceCommit": "fe03251e676285373a1ed6145436043d24e47421"
+    }
+  }
+}

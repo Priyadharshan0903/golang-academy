@@ -1,0 +1,6 @@
+.git
+site/public
+site/resources
+**/bin
+**/dist
+plan

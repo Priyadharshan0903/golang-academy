@@ -1,0 +1,24 @@
+[
+  {
+    "edition": "v1",
+    "rootHTTP": 200,
+    "visibleDownloads": [
+      "/downloads/go-by-doing-v1-content.zip"
+    ],
+    "archiveSha256": "728fb2afc6e4da9fd9d8f1751576ab5d157c6e9047fc0455547ef3669266d44c",
+    "legacyArchiveHTTP": 200,
+    "otherEditionArchiveHTTP": 404,
+    "runnerMalformedJSONHTTP": 400
+  },
+  {
+    "edition": "v2",
+    "rootHTTP": 200,
+    "visibleDownloads": [
+      "/downloads/gopath-v2-content.zip"
+    ],
+    "archiveSha256": "4b332e6d889ce5cb5784ec51b28e06739d1965a32bbbeb5da4ef068f16f86a62",
+    "legacyArchiveHTTP": 200,
+    "otherEditionArchiveHTTP": 404,
+    "runnerMalformedJSONHTTP": 400
+  }
+]

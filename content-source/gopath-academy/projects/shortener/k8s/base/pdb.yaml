@@ -1,0 +1,10 @@
+# Voluntary disruptions (node drains, upgrades) keep at least one pod.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: shortener
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shortener

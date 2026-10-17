@@ -1,0 +1,14 @@
+apiVersion: shortener.example.com/v1alpha1
+kind: ShortLink
+metadata:
+  name: go-docs
+spec:
+  url: https://go.dev/doc
+---
+apiVersion: shortener.example.com/v1alpha1
+kind: ShortLink
+metadata:
+  name: k8s-docs
+spec:
+  url: https://kubernetes.io/docs
+  code: k8s

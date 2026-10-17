@@ -1,0 +1,9 @@
+# Everything the operator needs:
+#
+#   kubectl apply -k projects/shortlink-operator/config/default
+namespace: shortlink-system
+resources:
+  - namespace.yaml
+  - ../crd
+  - ../rbac
+  - ../manager

@@ -1,0 +1,10 @@
+{
+  "name": "go-by-doing-v2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ../../scripts/editions.mjs dev v2",
+    "build": "node ../../scripts/editions.mjs build v2",
+    "prepare": "node ../../scripts/editions.mjs prepare v2"
+  }
+}

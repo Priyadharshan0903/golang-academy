@@ -1,0 +1,196 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    name: Go code
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Oldest supported version for examples, and the current stable release.
+        go: ["1.24.x", "stable"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Style
+        # gofmt from older releases cannot parse newer syntax (for
+        # example Go 1.27 generic methods), so check style on stable only.
+        if: matrix.go == 'stable'
+        run: ./scripts/check-style.sh
+      - name: Vet
+        run: |
+          go vet ./...
+          cd exercises && go vet ./... && go vet -tags solution ./...
+      - name: Generated code is up to date
+        if: matrix.go == 'stable'
+        run: |
+          go generate ./examples/...
+          git diff --exit-code
+      - name: Test examples, projects and server
+        run: go test -race ./...
+      - name: Test exercise solutions
+        working-directory: exercises
+        run: go test -race -tags solution ./...
+      - name: Check mutation exercises catch every bug
+        run: ./scripts/check-mutants.sh
+
+  thirdparty:
+    name: Third party examples
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: pg
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://postgres:pg@localhost:5432/postgres?sslmode=disable
+      TEST_REDIS_ADDR: localhost:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Vet and test
+        working-directory: examples/thirdparty
+        run: |
+          go mod tidy
+          go vet ./...
+          go test -race ./...
+      - name: Generated code is up to date
+        working-directory: examples/thirdparty
+        run: |
+          go generate ./...
+          git diff --exit-code -- '*.go'
+
+  shortener:
+    name: URL shortener project
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: pg
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://postgres:pg@localhost:5432/postgres?sslmode=disable
+      TEST_REDIS_ADDR: localhost:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Vet and test
+        working-directory: projects/shortener
+        run: |
+          go mod tidy
+          go vet ./...
+          go test -race ./...
+
+  jobqueue:
+    name: Job queue project
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: pg
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://postgres:pg@localhost:5432/postgres?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Vet and test
+        working-directory: projects/jobqueue
+        run: |
+          go mod tidy
+          go vet ./...
+          go test -race ./...
+
+  operator:
+    name: ShortLink operator project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Vet and test
+        working-directory: projects/shortlink-operator
+        run: |
+          go mod tidy
+          go vet ./...
+          go test -race ./...
+      - name: Generated code, CRD and RBAC are up to date
+        working-directory: projects/shortlink-operator
+        run: |
+          go generate ./...
+          git diff --exit-code -- api config
+
+  vulncheck:
+    name: Known vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
+          for m in examples/thirdparty projects/shortener projects/jobqueue projects/shortlink-operator; do
+            (cd $m && go mod tidy && govulncheck ./...)
+          done
+
+  site:
+    name: Site build
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: "0.168.0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Hugo uses git history for "last updated" dates
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Install Hugo
+        run: |
+          curl -fsSL -o hugo.deb "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+      - name: Build
+        working-directory: site
+        run: hugo --gc --minify
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site/public

@@ -1,0 +1,271 @@
+{
+  "toolchain": "go version go1.26.5 darwin/arm64",
+  "checks": 52,
+  "passed": 52,
+  "limits": [
+    "Go 1.27-only build-tagged code not claimed as verified with Go 1.26.5.",
+    "Nested third-party, PostgreSQL/Redis and Kubernetes modules require external dependencies/services and are not included."
+  ],
+  "results": [
+    {
+      "check": "v1 example interop-builds",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example network-protocols",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example reflection-generation",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example cli-config",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example dependency-injection",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example package-design",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example arrays-slices",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example maps-sets",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example pointers-unicode",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example context-select",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example goroutines-channels",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example mutex-waitgroup",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example cache-invalidation",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example sql-boundaries",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example transactions",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example defer-panic",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example error-values",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example wrapping-errors",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example hello-go",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example modules-packages",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example tooling-workflow",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example http-clients",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example http-handlers",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example http-middleware",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example control-flow",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example functions-closures",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example variables-types",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example graceful-shutdown",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example retry-idempotency",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example structured-logging",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example allocations-gc",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example profiling",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example scheduler-atomics",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example crypto-auth",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example input-boundaries",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example supply-chain",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example build-release",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example ci-maintenance",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example module-evolution",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example io-streams",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example json-files",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example time-regexp",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example benchmarks-debugging",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example fuzz-properties",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example table-tests",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example generics",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example small-interfaces",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 example structs-methods",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 website-checker solution",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v1 website-checker starter behavior",
+      "passed": true,
+      "intentionallyFailing": true
+    },
+    {
+      "check": "v2 root-module examples/projects/server",
+      "passed": true,
+      "intentionallyFailing": false
+    },
+    {
+      "check": "v2 exercise reference solutions",
+      "passed": true,
+      "intentionallyFailing": false
+    }
+  ]
+}

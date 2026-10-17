@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortlink-operator
+  labels:
+    app.kubernetes.io/name: shortlink-operator
+spec:
+  replicas: 2 # one leader works, the other waits to take over
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shortlink-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shortlink-operator
+    spec:
+      serviceAccountName: shortlink-operator
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: manager
+          image: shortlink-operator:dev
+          imagePullPolicy: IfNotPresent
+          args:
+            - --leader-elect
+            - --shortener-url=http://shortener.shortener.svc.cluster.local
+          ports:
+            - name: metrics
+              containerPort: 8080
+            - name: probes
+              containerPort: 8081
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: probes
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: probes
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortener
+spec:
+  template:
+    spec:
+      containers:
+        - name: shortener
+          imagePullPolicy: IfNotPresent # the image is loaded into the cluster, not pulled
+          env:
+            - name: DATABASE_URL_FILE
+              value: /secrets/db/database-url
+            - name: REDIS_ADDR
+              value: redis:6379
+          volumeMounts:
+            - name: db
+              mountPath: /secrets/db
+              readOnly: true
+      volumes:
+        - name: db
+          secret:
+            secretName: shortener-db

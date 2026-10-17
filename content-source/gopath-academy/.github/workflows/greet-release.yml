@@ -1,0 +1,40 @@
+# Builds release archives of the greet CLI with GoReleaser (lesson 14.4).
+#
+# The course repository holds many projects, so this runs GoReleaser in
+# snapshot mode: it builds, archives and checksums everything, and
+# uploads the result as a workflow artifact, but publishes nothing. In a
+# repository of its own, trigger on tags (on: push: tags: ["v*"]), drop
+# --snapshot, and grant contents: write so GoReleaser can create the
+# GitHub release.
+name: greet release
+
+on:
+  pull_request:
+    paths: ["projects/greet/**", ".github/workflows/greet-release.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # GoReleaser needs the full history and tags
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~> v2"
+          args: release --snapshot --clean
+          workdir: projects/greet
+      - uses: actions/upload-artifact@v4
+        with:
+          name: greet-dist
+          path: |
+            projects/greet/dist/*.tar.gz
+            projects/greet/dist/*.zip
+            projects/greet/dist/checksums.txt

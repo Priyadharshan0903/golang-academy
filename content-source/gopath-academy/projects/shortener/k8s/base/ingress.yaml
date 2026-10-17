@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shortener
+spec:
+  rules:
+    - host: shortener.localtest.me # *.localtest.me resolves to 127.0.0.1
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shortener
+                port:
+                  name: http
