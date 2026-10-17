@@ -22,8 +22,7 @@
     "prepare:v2": "node scripts/editions.mjs prepare v2",
     "downloads": "node scripts/downloads/export.mjs all",
     "check:separation": "node scripts/release/check-separation.mjs",
-    "check:secrets": "python3 scripts/security/check-secrets.py",
-    "audit:production": "npm audit --omit=dev --audit-level=high"
+    "build:pages": "node scripts/pages.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

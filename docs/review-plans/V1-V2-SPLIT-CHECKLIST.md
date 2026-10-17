@@ -1,5 +1,7 @@
 # V1 and V2 website separation checklist
 
+This records the earlier Sites separation and private release. Current public hosting uses two static builds on GitHub Pages; see [the deployment instructions](../../README.md#github-pages).
+
 Status: Both websites are deployed at their existing origins with separate, verified learner downloads. Implementation, archive, build, Go, runner, and HTTP release checks are complete. Five real-browser verification items remain pending because macOS blocks Chromium launch.
 
 Plan: [V1 and V2 website separation plan](V1-V2-SPLIT-PLAN.md).

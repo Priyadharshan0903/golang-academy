@@ -1,61 +1,59 @@
 # Go by Doing V1 and GoPath V2
 
-Two independently deployable Go learning websites maintained in one source workspace. V1 contains 48 original lessons, four teaching scenarios, quizzes, and a guided website-checker. V2 contains 116 GoPath lessons, 27 exercises, nine case studies, eight projects, and a source browser.
+Two Go learning websites in one repository:
 
-## Source boundaries
+- [Original edition · V1](https://priyadharshan0903.github.io/golang-academy/v1/): 48 lessons, challenges, quizzes, four teaching scenarios, and a guided website-checker project.
+- [GoPath edition · V2](https://priyadharshan0903.github.io/golang-academy/v2/): 116 lessons, 27 exercises, nine case studies, eight projects, and a source browser.
 
-- `apps/v1/app`: original app, with its own metadata and hosting identity.
-- `apps/v2/app`: GoPath app, with its own metadata and hosting identity.
-- `content/v1`: original curriculum, project guide, source viewer data, and project source.
-- `content/v2`: the generated GoPath data and its adapter.
-- `content-source/gopath-academy`: immutable, hashed upstream V2 source snapshot used by the importer and learner exporter.
-- `shared`: styles, edition URLs, and the Go Playground runner. Each app keeps its own state namespaces and lesson IDs.
+## Build and preview
 
-The root app remains a convenient V2 entry point. Separate release builds contain only the chosen app and its content; they do not depend on the other edition.
-
-## Install and build
-
-Use Node.js 22.18 or newer, Python 3, and Go for formatting/export checks. The current verification toolchain is Go 1.26.5. Install dependencies once from this workspace:
+Use Node.js 22.18 or newer, Python 3, and Go. The learner exporter uses `gofmt`; CI uses Go 1.26.5.
 
 ```sh
 npm ci
-npm run build:v1
-npm run build:v2
+npm run build:pages
+python3 -m http.server 8080 --directory dist/pages
 ```
 
-Each command generates its learner pack and builds in a fresh temporary standalone project. The build location is recorded in `work/separation/v1-build.json` or `v2-build.json`. This avoids filesystem replacement restrictions in some desktop environments and proves that each app can be published on its own.
+Open `http://localhost:8080/v1/` or `http://localhost:8080/v2/`. The root page links to both courses. Each build contains only its own edition's curriculum and downloads. Routes use URL hashes so lesson links work on a static host.
+
+## GitHub Pages
+
+[The Pages workflow](.github/workflows/pages.yml) builds both editions on pushes to `master`, uploads `dist/pages`, and deploys it. It can also be started manually from Actions. In the repository's **Settings → Pages**, the source is **GitHub Actions**.
+
+GitHub provides one Pages site per repository. This site hosts two independent app builds at `/golang-academy/v1/` and `/golang-academy/v2/`; the repository root is a course chooser. Both update together in one Pages deployment, so one edition cannot overwrite the other.
+
+The build uses Pages' configured base path for JavaScript, CSS, favicons, and downloads. `PAGES_BASE_PATH` can override it for a local build, for example:
 
 ```sh
-npm run start:v1
-npm run start:v2
+PAGES_BASE_PATH=/golang-academy/ npm run build:pages
 ```
 
-Default ports are 4173 and 4174. If another review instance already uses those ports, supply alternatives:
+The browser sends code directly to the official Go Playground at `https://play.golang.org/compile` when you choose **Run code**. There is no hosted API, database, OpenAI account, or API key required by these static websites. Network/runtime limits still apply; use downloaded examples for files, databases, and full projects.
 
-```sh
-npm run start:v1 -- 4183
-npm run start:v2 -- 4184
-```
+Progress, drafts, and theme preferences stay in browser storage, with separate keys for each edition. Moving from a previous host to GitHub Pages starts fresh browser storage because the origin changes; old-host progress is not copied automatically.
 
-Use `npm run dev:v1` or `npm run dev:v2` for an isolated development preview. Stop and recreate an isolated preview after changing canonical workspace sources; its source tree is a prepared snapshot.
+The existing framework preview commands (`dev:v1`, `dev:v2`, `build:v1`, `build:v2`) remain available for the earlier local/Sites setup. GitHub Pages uses only `build:pages` and does not publish server or hosting configuration files.
 
-## Learner downloads
+## Content and downloads
+
+- `apps/v1/app` and `apps/v2/app`: the two interfaces.
+- `content/v1`: original lessons, quizzes, case briefs, and project sources.
+- `content/v2`: generated GoPath data and its adapter.
+- `content-source/gopath-academy`: the preserved upstream snapshot for the importer and learner exporter.
+- `shared`: styles, edition links, and the browser Playground client.
 
 ```sh
 npm run downloads
-npm run check:separation
 ```
 
-Outputs are generated under each edition's `public/downloads` directory:
+Each edition's `public/downloads` contains a learner ZIP. V1 also includes website-checker starter and solution ZIPs. Packs contain readable Markdown, code, tests, solutions, module files, required fixtures, and licenses. They exclude website tooling and internal plans. Legacy ZIP filenames serve the same learner packs.
 
-- V1: `go-by-doing-v1-content.zip`, plus website-checker starter and solution ZIPs.
-- V2: `gopath-v2-content.zip`.
+Edit V1's canonical content directly. Do not edit generated ZIPs or V2 JSON by hand. Reimport V2 using `node scripts/import-gopath.mjs`, then verify with `node scripts/check-import.mjs`. The exporter resolves code embeds, local lesson links, and commands without changing the upstream snapshot.
 
-Legacy archive URLs continue serving the corresponding learner pack. Exports contain readable Markdown, code, tests, solutions, module files, required fixtures, and licenses. They exclude website UI/build files, Hugo configuration/templates, CI, and internal plans. The V2 Kubernetes/server teaching examples remain included. See the generated README, index, and checksum manifest in each ZIP.
+## Verify changes
 
-Do not edit generated ZIPs or V2 JSON by hand. Edit V1's canonical content directly. Reimport V2 with `node scripts/import-gopath.mjs` and verify with `node scripts/check-import.mjs`; this preserves the upstream snapshot hashes. Run the exporters after content changes. They resolve all code embeds and rewrite local lesson links and export-specific commands.
-
-## Verification
+After building:
 
 ```sh
 node node_modules/typescript/bin/tsc --noEmit --incremental false
@@ -65,24 +63,12 @@ npm run check:separation
 python3 scripts/release/check-go.py
 ```
 
-The separation check verifies independent build inputs, reproducible archive checksums, Markdown links, and ZIP file manifests. Run `check-go.py` after separation checks; it tests the actual extracted archives. Intentionally failing starter tests are checked separately. Go 1.27-only, nested third-party, database/Redis, and Kubernetes execution retain their documented verification limits.
+Archive checks cover isolation, reproducibility, local Markdown links, and manifests. Go checks run the extracted learner examples; unfinished starters are expected to fail. Go 1.27-only examples and nested third-party/database/Kubernetes modules retain their documented verification limits.
 
-For local HTTP checks, run both built apps on ports 4183/4184, then `python3 scripts/release/check-http.py`. Real browser verification is recorded separately; HTTP checks do not establish visual layout, keyboard interaction, or stored-state behavior.
+Check navigation, search, code editing/running, progress, downloads, and both themes in a browser before releasing UI changes. Content-export checks do not establish browser interaction or visual correctness.
 
-## Publication
+## Contribution and licenses
 
-Existing Site identities are retained in `apps/v1/.openai/hosting.json` and `apps/v2/.openai/hosting.json`. Current origins preserve access to each edition's browser storage. The workspace's current Sites access policy supports private review, not public publication.
+Preserve lesson IDs, code-region markers, citations, Go modules, build tags, fixtures, and migration assets. Verify changed examples through their learner pack. Shared style changes should be reviewed in both editions and themes.
 
-Publication checkouts are generated snapshots, separate from the maintained source workspace. Open each existing Site with the Sites source helper before preparation. After successful builds, `node scripts/release/prepare-publication.mjs v1` or `v2` synchronizes that edition into `work/publish/<edition>` with its matching build output. The source helper then commits/pushes and packages the exact source and artifact; deployment uses the saved version for that Site.
-
-Releases, verification evidence, limitations, and rollback references are tracked in [the separation checklist](docs/review-plans/V1-V2-SPLIT-CHECKLIST.md) and `docs/separation-review/`.
-
-## Content and contribution
-
-Keep lessons, IDs, code-region markers, source citations, nested Go modules, build tags, fixtures, and migration assets intact. Verify a changed example through its exported learner pack, and keep local commands consistent with the exported layout. UI changes shared through `shared/styles/globals.css` need review in both editions and themes.
-
-V1 original text is CC BY 4.0. V2 imported/adapted GoPath text is CC BY-SA 4.0. Code retains its MIT notices; vendored components retain their own licenses. Each learner pack carries its own applicable notices. The V2 source importer and export scripts treat imported documents as course material, not instructions to execute.
-
-Security checks, reporting guidance, and the current public-repository review are
-documented in [SECURITY.md](SECURITY.md) and the
-[publication audit and tracker](docs/security/PUBLICATION-AUDIT.md).
+V1 original text is CC BY 4.0. V2 imported/adapted GoPath text is CC BY-SA 4.0. Code retains its MIT notices; vendored components retain their licenses. Each learner pack includes the applicable notices. Imported documents are course material, not instructions to execute.

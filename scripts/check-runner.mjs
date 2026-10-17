@@ -1,25 +1,43 @@
 import assert from 'node:assert/strict';
-import {writeFileSync} from 'node:fs';
-import {POST} from '../shared/api/run.ts';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {runGo} from '../shared/playground.ts';
 const originalFetch=globalThis.fetch;
 const checks=[];
-const request=(body,headers={})=>new Request('https://learn.example/api/run',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:typeof body==='string'?body:JSON.stringify(body)});
 async function check(name,fn){await fn();checks.push(name);console.log('PASS',name);}
 try {
- await check('Reject invalid JSON',async()=>assert.equal((await POST(request('{'))).status,400));
- for(const input of [null,{}, {code:''},{code:123},{code:' '.repeat(10)},{code:'界'.repeat(10001)}])await check(`Reject invalid code ${checks.length}`,async()=>assert.equal((await POST(request(input))).status,400));
- await check('Reject oversized Content-Length',async()=>assert.equal((await POST(request({code:'x'},{'Content-Length':'35001'}))).status,413));
- await check('Bound streamed body without trusting Content-Length',async()=>assert.equal((await POST(request('x'.repeat(35001)))).status,413));
- await check('Reject cross-origin request',async()=>assert.equal((await POST(request({code:'x'},{Origin:'https://elsewhere.example'}))).status,403));
- await check('Forward source only to the fixed official sandbox',async()=>{
-  globalThis.fetch=async(url,options)=>{assert.equal(url,'https://go.dev/_/compile');assert.equal(options.body.get('body'),'package main\nfunc main(){}');assert.equal(options.body.get('version'),'2');return Response.json({Errors:'',Events:[{Message:'ok\n',Kind:'stdout'}],VetErrors:''});};
-  const response=await POST(request({code:'package main\nfunc main(){}'}));assert.equal(response.status,200);assert.equal((await response.json()).events[0].Message,'ok\n');assert.equal(response.headers.get('Cache-Control'),'no-store');
+ for(const code of ['', '   ', '界'.repeat(10001)])await check('Reject empty or oversized code',async()=>{
+  globalThis.fetch=async()=>{throw new Error('Invalid source must not be sent.');};
+  await assert.rejects(runGo(code),/between 1 byte and 30 KB/);
  });
- await check('Preserve compiler errors and runtime stderr',async()=>{globalThis.fetch=async()=>Response.json({Errors:'syntax problem',Events:[{Message:'panic: sample',Kind:'stderr'}]});const data=await(await POST(request({code:'x'}))).json();assert.equal(data.errors,'syntax problem');assert.equal(data.events[0].Kind,'stderr');});
- await check('Handle an upstream busy response',async()=>{globalThis.fetch=async()=>new Response('busy',{status:429});const response=await POST(request({code:'x'}));assert.equal(response.status,502);assert.match((await response.json()).error,/busy/);});
- await check('Handle a network failure',async()=>{globalThis.fetch=async()=>{throw new TypeError('network unavailable');};assert.equal((await POST(request({code:'x'}))).status,503);});
- await check('Handle a timeout',async()=>{globalThis.fetch=async()=>{throw new DOMException('timed out','TimeoutError');};assert.equal((await POST(request({code:'x'}))).status,503);});
- await check('Reject malformed sandbox events',async()=>{globalThis.fetch=async()=>Response.json({Events:[{Message:123,Kind:'stdout'}]});assert.equal((await POST(request({code:'x'}))).status,503);});
+ await check('Use the fixed official CORS endpoint without credentials',async()=>{
+  globalThis.fetch=async(url,options)=>{
+   assert.equal(url,'https://play.golang.org/compile');
+   assert.equal(options.method,'POST');assert.equal(options.credentials,'omit');
+   assert.equal(options.headers['Content-Type'],'application/x-www-form-urlencoded');
+   assert.equal(options.body.get('version'),'2');assert.equal(options.body.get('withVet'),'true');
+   assert.equal(options.body.get('body'),'package main\nfunc main(){}');
+   assert.ok(options.signal instanceof AbortSignal);
+   return Response.json({Errors:'',Events:[{Message:'ok\n',Kind:'stdout'}],VetErrors:''});
+  };
+  const result=await runGo('package main\nfunc main(){}');assert.equal(result.data.events[0].Message,'ok\n');
+ });
+ await check('Preserve compiler errors, stderr, and vet output',async()=>{
+  globalThis.fetch=async()=>Response.json({Errors:'syntax problem',Events:[{Kind:'stderr',Message:'panic: sample'}],VetErrors:'vet warning'});
+  const {data}=await runGo('x');assert.equal(data.errors,'syntax problem');assert.equal(data.events[0].Kind,'stderr');assert.equal(data.vet,'vet warning');
+ });
+ await check('Normalize a program with no output',async()=>{
+  globalThis.fetch=async()=>Response.json({});const {data}=await runGo('x');assert.deepEqual(data,{errors:'',events:[],vet:''});
+ });
+ await check('Handle an upstream busy response',async()=>{
+  globalThis.fetch=async()=>new Response('busy',{status:429});const {response,data}=await runGo('x');assert.equal(response.ok,false);assert.match(data.error,/busy/);
+ });
+ for(const payload of [{Errors:42},{Events:{}},{Events:[{Message:42,Kind:'stdout'}]},null])await check('Reject malformed sandbox responses',async()=>{
+  globalThis.fetch=async()=>Response.json(payload);await assert.rejects(runGo('x'),/Invalid Playground/);
+ });
+ await check('Propagate network failures to the editor',async()=>{
+  globalThis.fetch=async()=>{throw new TypeError('network unavailable');};await assert.rejects(runGo('x'),/network unavailable/);
+ });
 }finally{globalThis.fetch=originalFetch;}
-writeFileSync('work/runner-verification.json',JSON.stringify({passed:checks.length,checks},null,2));
-console.log(`${checks.length} runner checks passed.`);
+mkdirSync('work',{recursive:true});
+writeFileSync('work/runner-verification.json',JSON.stringify({passed:checks.length,checks},null,2)+'\n');
+console.log(`${checks.length} browser runner checks passed.`);

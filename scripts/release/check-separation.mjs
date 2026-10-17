@@ -14,7 +14,8 @@ for(const edition of ['v1','v2']){
  const previous=readJSON(`work/separation/${edition}-download.json`);
  const current=await exportEdition(edition);
  assert.equal(previous.archiveSha256,current.archiveSha256,`${edition} download must be deterministic`);
- const build=readJSON(`work/separation/${edition}-build.json`);
+ const pagesBuild=existsSync('work/pages/build.json')?readJSON('work/pages/build.json').editions.find(item=>item.edition===edition):null;
+ const build=pagesBuild||readJSON(`work/separation/${edition}-build.json`);
  const other=edition==='v1'?'v2':'v1';
  assert.ok(!existsSync(join(build.directory,'content',other)));
  assert.ok(!walk(join(build.directory,'public')).some(path=>path.includes(other==='v1'?'go-by-doing-v1-content':'gopath-v2-content')));
