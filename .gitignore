@@ -64,6 +64,7 @@ dist/
 .sites-runtime/
 .agents/
 .codex/
+.openai/
 /outputs/
 /work/
 

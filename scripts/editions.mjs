@@ -28,7 +28,7 @@ export function prepareEdition(edition,{target,dependencies=true,dependencyDirec
  for(const file of commonScripts)copy('scripts/'+file);
  for(const folder of ['build','lib','shared'])copy(folder);
  copy('apps/'+edition+'/app','app');
- copy('apps/'+edition+'/.openai','.openai');
+ if(existsSync(join(root,'apps',edition,'.openai')))copy('apps/'+edition+'/.openai','.openai');
  copy('content/'+edition,'content/'+edition);
  copy('public/favicon.svg');
  copy('apps/'+edition+'/public/downloads','public/downloads');
@@ -52,7 +52,8 @@ export function buildEdition(edition,options={}){
  const javascript=walk(client).filter(p=>p.endsWith('.js')).map(p=>readFileSync(p,'utf8')).join('\n');
  const forbidden=edition==='v1'?'425 resolved source embeds':'A LITTLE CODE. A LOT OF GO.';
  if(javascript.includes(forbidden))throw new Error(`Cross-edition content detected in ${edition}.`);
- const report={edition,directory,dist:join(directory,'dist'),project_id:readJSON(join(directory,'.openai/hosting.json')).project_id,javascriptBytes:Buffer.byteLength(javascript),built:true};
+ const hosting=join(directory,'.openai/hosting.json');
+ const report={edition,directory,dist:join(directory,'dist'),project_id:existsSync(hosting)?readJSON(hosting).project_id:undefined,javascriptBytes:Buffer.byteLength(javascript),built:true};
  mkdirSync(join(root,'work/separation'),{recursive:true});
  writeFileSync(join(root,`work/separation/${edition}-build.json`),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));

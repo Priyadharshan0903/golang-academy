@@ -35,6 +35,8 @@ Progress, drafts, and theme preferences stay in browser storage, with separate k
 
 The existing framework preview commands (`dev:v1`, `dev:v2`, `build:v1`, `build:v2`) remain available for the earlier local/Sites setup. GitHub Pages uses only `build:pages` and does not publish server or hosting configuration files.
 
+Local `.openai/` hosting configuration is optional, ignored by Git, and not included in the repository. Neither GitHub Pages nor a fresh local checkout needs it.
+
 ## Content and downloads
 
 - `apps/v1/app` and `apps/v2/app`: the two interfaces.
