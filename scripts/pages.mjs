@@ -7,8 +7,34 @@ import {spawnSync} from 'node:child_process';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const args=process.argv.slice(2);
-if(args.length&&!(args.length===2&&args[0]==='--dependencies'))throw new Error('Usage: node scripts/pages.mjs [--dependencies /path/to/node_modules]');
-const dependencies=resolve(args[1]||join(root,'node_modules'));
+let dependencies=join(root,'node_modules'),serveAfterBuild=false,previewOnly=false,port=8080;
+for(let i=0;i<args.length;i++){
+ const arg=args[i];
+ if(arg==='--dependencies'&&args[i+1])dependencies=resolve(args[++i]);
+ else if(arg==='--serve')serveAfterBuild=true;
+ else if(arg==='--preview')previewOnly=true;
+ else if(arg==='--port'&&/^\d+$/.test(args[i+1]||''))port=Number(args[++i]);
+ else throw new Error('Usage: node scripts/pages.mjs [--serve|--preview] [--port 8080] [--dependencies /path/to/node_modules]');
+}
+if(port<1024||port>65535)throw new Error('Choose a preview port between 1024 and 65535.');
+if(serveAfterBuild&&previewOnly)throw new Error('Choose either --serve or --preview.');
+function serve(){
+ let directory=join(root,'dist/pages');
+ const reportPath=join(root,'work/pages/build.json');
+ if(!existsSync(join(directory,'index.html'))||!existsSync(reportPath))throw new Error('Run npm run build before starting the preview.');
+ const report=JSON.parse(readFileSync(reportPath,'utf8'));
+ if(report.base!=='/'){
+  directory=mkdtempSync(join(tmpdir(),'go-pages-preview-'));
+  const mount=join(directory,...report.base.split('/').filter(Boolean));
+  mkdirSync(dirname(mount),{recursive:true});
+  symlinkSync(join(root,'dist/pages'),mount,'dir');
+ }
+ console.log(`V1: http://127.0.0.1:${port}${report.base}v1/\nV2: http://127.0.0.1:${port}${report.base}v2/`);
+ const result=spawnSync('python3',['-m','http.server',String(port),'--bind','127.0.0.1','--directory',directory],{stdio:'inherit'});
+ if(result.error)throw result.error;
+ process.exit(result.status??1);
+}
+if(previewOnly)serve();
 const repository=process.env.GITHUB_REPOSITORY?.split('/')[1];
 const requestedBase=process.env.PAGES_BASE_PATH??(repository&&!repository.toLowerCase().endsWith('.github.io')?`/${repository}/`:'/');
 const base='/'+requestedBase.split('/').filter(Boolean).join('/')+(requestedBase.split('/').filter(Boolean).length?'/':'');
@@ -70,3 +96,4 @@ cpSync(artifact,destination,{recursive:true});
 mkdirSync(join(root,'work/pages'),{recursive:true});
 writeFileSync(join(root,'work/pages/build.json'),JSON.stringify({base,destination,editions:reports},null,2)+'\n');
 console.log(`GitHub Pages artifact: ${destination}\nV1: ${base}v1/\nV2: ${base}v2/`);
+if(serveAfterBuild)serve();

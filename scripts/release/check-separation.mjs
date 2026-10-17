@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import {existsSync,readFileSync,readdirSync,writeFileSync} from 'node:fs';
-import {join,resolve,posix} from 'node:path';
+import {dirname,join,resolve,posix} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
 import {marked} from '../../vendor/marked/lib/marked.esm.js';
-import {root} from '../editions.mjs';
 import {exportEdition} from '../downloads/export.mjs';
+
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
 
 process.chdir(root);
 const readJSON=path=>JSON.parse(readFileSync(path,'utf8'));
@@ -14,8 +16,7 @@ for(const edition of ['v1','v2']){
  const previous=readJSON(`work/separation/${edition}-download.json`);
  const current=await exportEdition(edition);
  assert.equal(previous.archiveSha256,current.archiveSha256,`${edition} download must be deterministic`);
- const pagesBuild=existsSync('work/pages/build.json')?readJSON('work/pages/build.json').editions.find(item=>item.edition===edition):null;
- const build=pagesBuild||readJSON(`work/separation/${edition}-build.json`);
+ const build=readJSON('work/pages/build.json').editions.find(item=>item.edition===edition);
  const other=edition==='v1'?'v2':'v1';
  assert.ok(!existsSync(join(build.directory,'content',other)));
  assert.ok(!walk(join(build.directory,'public')).some(path=>path.includes(other==='v1'?'go-by-doing-v1-content':'gopath-v2-content')));

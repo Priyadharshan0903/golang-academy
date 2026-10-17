@@ -11,11 +11,11 @@ Use Node.js 22.18 or newer, Python 3, and Go. The learner exporter uses `gofmt`;
 
 ```sh
 npm ci
-npm run build:pages
-python3 -m http.server 8080 --directory dist/pages
+npm run build
+npm run preview
 ```
 
-Open `http://localhost:8080/v1/` or `http://localhost:8080/v2/`. The root page links to both courses. Each build contains only its own edition's curriculum and downloads. Routes use URL hashes so lesson links work on a static host.
+Open `http://127.0.0.1:8080/v1/` or `http://127.0.0.1:8080/v2/`. The root page links to both courses. Each build contains only its own edition's curriculum and downloads. Routes use URL hashes so lesson links work on a static host.
 
 ## GitHub Pages
 
@@ -33,9 +33,9 @@ The browser sends code directly to the official Go Playground at `https://play.g
 
 Progress, drafts, and theme preferences stay in browser storage, with separate keys for each edition. Moving from a previous host to GitHub Pages starts fresh browser storage because the origin changes; old-host progress is not copied automatically.
 
-The existing framework preview commands (`dev:v1`, `dev:v2`, `build:v1`, `build:v2`) remain available for the earlier local/Sites setup. GitHub Pages uses only `build:pages` and does not publish server or hosting configuration files.
+`npm run dev` builds both courses and starts the static preview. Re-run it after source changes. `npm run dev:v1` and `npm run dev:v2` use ports 4173 and 4174. `npm run preview -- --port 8081` serves the existing build on another port and respects its repository prefix.
 
-Local `.openai/` hosting configuration is optional, ignored by Git, and not included in the repository. Neither GitHub Pages nor a fresh local checkout needs it.
+GitHub Pages is the only website deployment target. The build and preview use no Sites worker, account authentication, hosting manifest, or API server. The `db/` and `examples/d1/` files are separate database examples, outside the course websites; only those examples need Cloudflare D1 if you choose to run them.
 
 ## Content and downloads
 

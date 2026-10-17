@@ -1,28 +1,23 @@
 {
-  "name": "site-creator-vinext-starter",
+  "name": "go-by-doing",
   "version": "0.1.0",
   "private": true,
   "engines": {
     "node": ">=22.18.0"
   },
   "scripts": {
-    "install:ci": "node scripts/install-ci.mjs",
-    "dev": "node scripts/run-framework.mjs dev",
-    "build": "node scripts/run-framework.mjs build",
-    "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "install:ci": "npm ci --no-audit --no-fund",
+    "dev": "node scripts/pages.mjs --serve",
+    "dev:v1": "node scripts/pages.mjs --serve --port 4173",
+    "dev:v2": "node scripts/pages.mjs --serve --port 4174",
+    "build": "node scripts/pages.mjs",
+    "build:pages": "node scripts/pages.mjs",
+    "start": "node scripts/pages.mjs --preview",
+    "preview": "node scripts/pages.mjs --preview",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern work --ignore-pattern outputs --ignore-pattern content-source --ignore-pattern vendor",
     "db:generate": "drizzle-kit generate",
-    "build:v1": "node scripts/editions.mjs build v1",
-    "dev:v1": "node scripts/editions.mjs dev v1",
-    "start:v1": "node scripts/editions.mjs start v1",
-    "prepare:v1": "node scripts/editions.mjs prepare v1",
-    "build:v2": "node scripts/editions.mjs build v2",
-    "dev:v2": "node scripts/editions.mjs dev v2",
-    "start:v2": "node scripts/editions.mjs start v2",
-    "prepare:v2": "node scripts/editions.mjs prepare v2",
     "downloads": "node scripts/downloads/export.mjs all",
-    "check:separation": "node scripts/release/check-separation.mjs",
-    "build:pages": "node scripts/pages.mjs"
+    "check:separation": "node scripts/release/check-separation.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -36,7 +31,6 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.31.0",
-    "next": "16.3.8",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.6.7",
     "react": "19.2.8",
@@ -51,43 +45,22 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
     "@cloudflare/workers-types": "4.20260515.1",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "16.3.8",
-    "json-rpc-2.0": "1.7.1",
-    "raw-body": "3.0.2",
-    "react-server-dom-webpack": "19.2.8",
     "tailwindcss": "4.2.1",
     "tw-animate-css": "^1.4.0",
     "typescript": "5.9.3",
-    "vinext": "1.0.0-beta.5",
-    "vite": "8.0.16",
-    "wrangler": "4.92.0"
+    "vite": "8.0.16"
   },
   "type": "module",
   "overrides": {
-    "miniflare": {
-      "sharp": "0.35.5",
-      "undici": "7.29.1",
-      "ws": "8.21.0"
-    },
-    "vinext": {
-      "image-size": "2.0.3"
-    },
-    "wrangler": {
-      "esbuild": "0.28.1"
-    },
-    "@cloudflare/vite-plugin": {
-      "ws": "8.21.0"
-    },
     "tsx": {
       "esbuild": "0.28.1"
     },
