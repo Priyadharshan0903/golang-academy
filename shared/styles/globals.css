@@ -72,3 +72,53 @@
 @media(max-width:1000px){.academy-v2 .academy-reading-layout{display:block}}
 @media(max-width:760px){.academy-v2 .topbar{min-height:65px}.academy-v2 .sidebar-toggle{display:none}.academy-v2 .sidebar-close{display:inline-flex}.academy-v2 .sidebar-header{min-height:65px;margin-bottom:20px}.academy-v2 .skip-link{left:18px}}
 @media(max-width:520px){.academy-v2 .v2-top-badge{display:none}.academy-v2 .topbar-location{gap:6px}.academy-v2 .academy-code-toolbar{flex-wrap:wrap;gap:10px}.academy-v2 .academy-code-toolbar>span{max-width:100%;overflow-wrap:anywhere}}
+
+/* Original edition: 14px reading text, 12px code and supporting labels. */
+.academy-v1{
+ --v1-body-font-size:.875rem;
+ --v1-small-font-size:.75rem;
+ font-size:var(--v1-body-font-size);
+ line-height:1.75;
+}
+.academy-v1 :is(
+ p,li,input,select,.button,.text-link,.main-nav>a,.top-download,.notice,
+ .curriculum-summary>div:not(.progress-track),
+ .module-lessons strong,.curriculum-info small,.filter-tabs button,
+ .quiz-options button,.quiz-question,.exercise-card summary,
+ .pitfall strong,.deeper strong,.lesson-complete strong,
+ .lesson-pagination>a,.related-lessons>a,.resource-grid p,
+ .project-flow>div>strong,.checkpoint-toggle,.project-references>a,
+ .search-results strong,.search-input-row input
+){font-size:var(--v1-body-font-size)}
+.academy-v1 :is(
+ .page-heading p:last-child,.hero-copy>p,.section-heading p:last-child,
+ .lesson-subtitle,.lesson-article section>p,.case-detail>section>p,
+ .exercise-card>p,.exercise-card details>p,.exercise-card ul,
+ .curriculum-note p,.case-card-body>p,.download-panel p,
+ .project-downloads p,.project-body-text,.step-body>p,.step-task p,
+ .step-acceptance p,.project-next p,.case-project-link p
+){font-size:var(--v1-body-font-size);line-height:1.8}
+.academy-v1 :is(
+ small,kbd,.eyebrow,.brand-caption,.sidebar-label,.path-nav>a,
+ .path-number,.nav-count,.sidebar-bottom,.free-label,.sidebar-bottom p,
+ .sidebar-bottom a,.topbar-location,.topbar-location>span:last-child,
+ .search-trigger,.edition,.hero-badge,.hero-facts,.module-number,
+ .module-card-bottom,.level,.overview-stats>div>span,.site-footer,
+ .curriculum-summary>div>span,.curriculum-index,.lesson-count,
+ .topic-tags span,.module-lessons small,.back-link,.lesson-meta,
+ .section-numeral,.editable-label,.editor-toolbar,.editor-toolbar button,
+ .editor-bottom,.run-button,.output-heading,.output-heading button,
+ .lesson-article section>.sandbox-note,.lesson-article section>.draft-status,
+ .lesson-complete p,.lesson-pagination small,.lesson-toc>button,
+ .lesson-toc>a,.toc-note p,.scenario-label,.challenge-index,
+ .project-card-tags span,.project-facts,.project-flow small,
+ .project-step-heading>span,.project-progress-note,
+ .reference-solution>summary small,.source-file-list button,
+ .source-file-header>span,.source-file-header>button,.source-file-panel>p,
+ .window-header,.window-output,.output-success,.visual-caption,
+ .floating-note small,.search-results small,.search-bottom,.deeper small
+){font-size:var(--v1-small-font-size)}
+.academy-v1 :is(
+ .code-window pre,.code-editor textarea,.line-numbers,.code-output,
+ .project-command,.source-file-panel>pre
+){font-size:var(--v1-small-font-size);line-height:1.8}
