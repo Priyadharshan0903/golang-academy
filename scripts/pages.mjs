@@ -29,8 +29,7 @@ function serve(){
   mkdirSync(dirname(mount),{recursive:true});
   symlinkSync(join(root,'dist/pages'),mount,'dir');
  }
- console.log(`V1: http://127.0.0.1:${port}${report.base}v1/\nV2: http://127.0.0.1:${port}${report.base}v2/`);
- const result=spawnSync('python3',['-m','http.server',String(port),'--bind','127.0.0.1','--directory',directory],{stdio:'inherit'});
+ const result=spawnSync('python3',[join(root,'scripts/preview.py'),'--port',String(port),'--directory',directory,'--base',report.base],{stdio:'inherit'});
  if(result.error)throw result.error;
  process.exit(result.status??1);
 }

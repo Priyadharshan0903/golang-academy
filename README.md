@@ -15,7 +15,7 @@ npm run build
 npm run preview
 ```
 
-Open `http://127.0.0.1:8080/v1/` or `http://127.0.0.1:8080/v2/`. The root page links to both courses. Each build contains only its own edition's curriculum and downloads. Routes use URL hashes so lesson links work on a static host.
+Open the V1 or V2 URL printed in the terminal (normally `http://127.0.0.1:8080/v1/` or `http://127.0.0.1:8080/v2/`). If the port is busy, the preview tries up to 19 higher ports and prints the selected URLs. The root page links to both courses. Each build contains only its own edition's curriculum and downloads. Routes use URL hashes so lesson links work on a static host.
 
 ## GitHub Pages
 
